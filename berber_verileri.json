@@ -1,0 +1,26 @@
+[
+  {
+    "berber_adi": "Makas Kardeşler",
+    "makas_puani": 4.8,
+    "uzaklik_km": 1.2,
+    "hizmetler": [
+      { "islem": "Saç Kesimi", "fiyat_tl": 200, "sure_dk": 25 },
+      { "islem": "Sakal Kesimi", "fiyat_tl": 100, "sure_dk": 15 },
+      { "islem": "Ağda", "fiyat_tl": 50, "sure_dk": 10 },
+      { "islem": "Kaş Alımı", "fiyat_tl": 60, "sure_dk": 10 }
+    ],
+    "musaitlik": "14:30"
+  },
+  {
+    "berber_adi": "VIP Kuaför Salonu",
+    "makas_puani": 4.5,
+    "uzaklik_km": 3.5,
+    "hizmetler": [
+      { "islem": "Saç Kesimi", "fiyat_tl": 300, "sure_dk": 30 },
+      { "islem": "Saç Boyama", "fiyat_tl": 600, "sure_dk": 45 },
+      { "islem": "Sakal Kesimi", "fiyat_tl": 150, "sure_dk": 20 },
+      { "islem": "Keratin Bakım", "fiyat_tl": 400, "sure_dk": 40 }
+    ],
+    "musaitlik": "15:00"
+  }
+]
