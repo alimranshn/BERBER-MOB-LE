@@ -1,11 +1,64 @@
-[
-  { "id": 1, "name": "Saç Kesimi", "price": 600, "category": "Kadın", "desc": "Profesyonel saç kesimi ve şekillendirme." },
-  { "id": 2, "name": "Dip Boya", "price": 1200, "category": "Kadın", "desc": "Kaliteli organik boyalar ile dip boya işlemi." },
-  { "id": 3, "name": "Manikür & Pedikür", "price": 800, "category": "Kadın", "desc": "El ve ayak tırnak bakımı, oje uygulaması." },
-  { "id": 4, "name": "Kombo: Yenilenme Paketi", "price": 2500, "category": "Kadın", "desc": "İçerik: Saç Kesimi + Komple Boya + Keratin Bakımı. Komple değişim isteyenler için indirimli paket." },
-  
-  { "id": 5, "name": "Saç & Sakal Kesimi", "price": 400, "category": "Erkek", "desc": "Modern saç kesimi ve detaylı sakal tıraşı." },
-  { "id": 6, "name": "Sadece Saç Kesimi", "price": 300, "category": "Erkek", "desc": "Makine ve makas ile saç kesimi, yıkama." },
-  { "id": 7, "name": "Cilt Bakımı", "price": 500, "category": "Erkek", "desc": "Siyah nokta temizliği, buhar ve nemlendirici maske." },
-  { "id": 8, "name": "Kombo: VIP Damat/Bakım", "price": 850, "category": "Erkek", "desc": "İçerik: Saç-Sakal + Siyah Nokta Maskesi + Yanak/Kulak Ağda + Yıkama ve Fön." }
-]
+{
+  "erkek": {
+    "hizmetler": [
+      { "id": "e1", "ad": "Saç Kesimi", "fiyat": 600 },
+      { "id": "e2", "ad": "Sakal Kesimi", "fiyat": 350 },
+      { "id": "e3", "ad": "Çocuk Tıraşı", "fiyat": 450 },
+      { "id": "e4", "ad": "Saç Yıkama ve Fön", "fiyat": 300 },
+      { "id": "e5", "ad": "Buharlı Cilt Bakımı", "fiyat": 1200 },
+      { "id": "e6", "ad": "Kil / Siyah Nokta Maskesi", "fiyat": 300 },
+      { "id": "e7", "ad": "Saç Boyama (Erkek)", "fiyat": 900 }
+    ],
+    "paketler": [
+      { 
+        "id": "ep1", 
+        "ad": "Standart Bakım Paketi", 
+        "fiyat": 1100, 
+        "icerik": ["Saç Kesimi", "Sakal Kesimi", "Yıkama", "Fön"] 
+      },
+      { 
+        "id": "ep2", 
+        "ad": "Damat Paketi", 
+        "fiyat": 3500, 
+        "icerik": ["Damat Tıraşı", "Buharlı Cilt Bakımı", "Maske", "Manikür", "Saç Şekillendirme"] 
+      }
+    ],
+    "kuaforler": [
+      { "id": "ek1", "ad": "Ahmet Yılmaz", "puan": 4.8, "uzmanlik": "Saç ve Sakal Kesimi" },
+      { "id": "ek2", "ad": "Mehmet Demir", "puan": 4.5, "uzmanlik": "Cilt Bakımı ve Modern Kesim" },
+      { "id": "ek3", "ad": "Burak Kaya", "puan": 4.9, "uzmanlik": "Damat Tıraşı ve Renklendirme" }
+    ]
+  },
+  "kadin": {
+    "hizmetler": [
+      { "id": "k1", "ad": "Normal Saç Kesimi", "fiyat": 1100 },
+      { "id": "k2", "ad": "Modern / Vizajist Kesim", "fiyat": 1500 },
+      { "id": "k3", "ad": "Fön", "fiyat": 400 },
+      { "id": "k4", "ad": "Dip Boya", "fiyat": 1400 },
+      { "id": "k5", "ad": "Komple Boya", "fiyat": 2500 },
+      { "id": "k6", "ad": "Ombre / Röfle", "fiyat": 5000 },
+      { "id": "k7", "ad": "Manikür", "fiyat": 800 },
+      { "id": "k8", "ad": "Pedikür", "fiyat": 1000 },
+      { "id": "k9", "ad": "Profesyonel Makyaj", "fiyat": 2000 }
+    ],
+    "paketler": [
+      { 
+        "id": "kp1", 
+        "ad": "Gelin Paketi", 
+        "fiyat": 8500, 
+        "icerik": ["Gelin Başı", "Porselen Makyaj", "Manikür", "Pedikür", "Cilt Bakımı"] 
+      },
+      { 
+        "id": "kp2", 
+        "ad": "Bakım Günü Paketi", 
+        "fiyat": 3300, 
+        "icerik": ["Modern Kesim", "Saç Bakım Maskesi", "Manikür", "Fön"] 
+      }
+    ],
+    "kuaforler": [
+      { "id": "kk1", "ad": "Ayşe Çelik", "puan": 4.9, "uzmanlik": "Gelin Başı ve Makyaj" },
+      { "id": "kk2", "ad": "Zeynep Şahin", "puan": 4.7, "uzmanlik": "Ombre ve Renklendirme" },
+      { "id": "kk3", "ad": "Elif Tekin", "puan": 4.6, "uzmanlik": "Kesim ve Bakım" }
+    ]
+  }
+}
