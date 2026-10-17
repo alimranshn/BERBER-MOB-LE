@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BERBER MOBİLE — Randevu Al</title>
+  <style>
+    /* ─── RESET & ROOT ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --male:   #1a73e8;
+      --male-d: #0d47a1;
+      --female: #e040fb;
+      --female-d: #7b1fa2;
+      --ai:     #00c896;
+      --ai-d:   #00695c;
+      --dark:   #12151a;
+      --card:   #1e2229;
+      --card2:  #252b35;
+      --text:   #f0f2f5;
+      --muted:  #8b95a5;
+      --accent: #f9c74f;
+      --radius: 18px;
+      --shadow: 0 8px 32px rgba(0,0,0,.45);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      min-height: 100vh;
+      line-height: 1.6;
+    }
+
+    /* ─── HERO / HEADER ────────────────────────────────────── */
+    .hero {
+      background: linear-gradient(135deg, #0d0e13 0%, #1a1f2e 60%, #0d1117 100%);
+      text-align: center;
+      padding: 60px 20px 50px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at 50% 0%, rgba(26,115,232,.25) 0%, transparent 70%);
+    }
+    .hero-logo {
+      font-size: 3rem;
+      margin-bottom: 8px;
+      display: block;
+    }
+    .hero h1 {
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      font-weight: 800;
+      letter-spacing: -1px;
+      position: relative;
+    }
+    .hero h1 span { color: var(--accent); }
+    .hero p {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      position: relative;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      background: rgba(249,199,79,.15);
+      color: var(--accent);
+      border: 1px solid rgba(249,199,79,.4);
+      border-radius: 50px;
+      padding: 4px 14px;
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    /* ─── NAV TABS ─────────────────────────────────────────── */
+    .nav-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      padding: 24px 20px 0;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 12px 28px;
+      border: 2px solid transparent;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s;
+      background: var(--card);
+      color: var(--muted);
+      min-width: 120px;
+      touch-action: manipulation;
+    }
+    .tab-btn.male   { border-color: var(--male);   }
+    .tab-btn.female { border-color: var(--female);  }
+    .tab-btn.ai     { border-color: var(--ai);      }
+
+    .tab-btn.active.male   { background: var(--male);   color: #fff; }
+    .tab-btn.active.female { background: var(--female); color: #fff; }
+    .tab-btn.active.ai     { background: var(--ai);     color: #fff; }
+
+    .tab-btn:hover { opacity: .85; transform: translateY(-2px); }
+    .tab-btn:active { transform: scale(.97); }
+
+    /* ─── SECTION WRAPPER ──────────────────────────────────── */
+    .section { display: none; padding: 32px 20px 60px; max-width: 900px; margin: 0 auto; }
+    .section.active { display: block; }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .section-header h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+    }
+    .section-header p { color: var(--muted); margin-top: 6px; }
+
+    /* ─── SERVICE GRID ─────────────────────────────────────── */
+    .service-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+    }
+
+    .service-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 22px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+      border: 2px solid transparent;
+      touch-action: manipulation;
+      user-select: none;
+    }
+    .service-card:hover  { transform: translateY(-4px); box-shadow: var(--shadow); }
+    .service-card:active { transform: scale(.96); }
+    .service-card.selected.male   { border-color: var(--male);   background: rgba(26,115,232,.15); }
+    .service-card.selected.female { border-color: var(--female); background: rgba(224,64,251,.15); }
+
+    .service-icon { font-size: 2.4rem; margin-bottom: 10px; display: block; }
+    .service-name { font-weight: 700; font-size: 1rem; }
+    .service-price {
+      color: var(--accent);
+      font-weight: 700;
+      font-size: .95rem;
+      margin-top: 4px;
+    }
+    .service-time { color: var(--muted); font-size: .8rem; margin-top: 2px; }
+
+    /* ─── BARBER PICKER ────────────────────────────────────── */
+    .barber-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 28px 0;
+    }
+    .barber-card {
+      background: var(--card2);
+      border-radius: var(--radius);
+      padding: 16px 20px;
+      text-align: center;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: all .2s;
+      min-width: 110px;
+      touch-action: manipulation;
+    }
+    .barber-card:hover { transform: translateY(-3px); }
+    .barber-card:active { transform: scale(.96); }
+    .barber-card.selected { border-color: var(--accent); background: rgba(249,199,79,.12); }
+    .barber-avatar { font-size: 2.2rem; margin-bottom: 6px; }
+    .barber-name { font-weight: 700; font-size: .9rem; }
+    .barber-stars { color: var(--accent); font-size: .8rem; }
+
+    /* ─── DATE / TIME PICKER ───────────────────────────────── */
+    .picker-label {
+      font-weight: 700;
+      font-size: .9rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 10px;
+    }
+    .date-row {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+    }
+    .date-row::-webkit-scrollbar { height: 4px; }
+    .date-row::-webkit-scrollbar-thumb { background: var(--card2); border-radius: 4px; }
+
+    .date-btn {
+      flex: 0 0 68px;
+      background: var(--card);
+      border: 2px solid transparent;
+      border-radius: 14px;
+      padding: 12px 6px;
+      text-align: center;
+      cursor: pointer;
+      scroll-snap-align: start;
+      transition: all .2s;
+      touch-action: manipulation;
+    }
+    .date-btn:hover { border-color: var(--accent); }
+    .date-btn.selected { border-color: var(--accent); background: rgba(249,199,79,.15); }
+    .date-day { font-size: .7rem; color: var(--muted); text-transform: uppercase; }
+    .date-num { font-size: 1.3rem; font-weight: 800; }
+    .date-month { font-size: .7rem; color: var(--muted); }
+
+    .time-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .time-btn {
+      background: var(--card);
+      border: 2px solid transparent;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: .9rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .2s;
+      touch-action: manipulation;
+      color: var(--text);
+    }
+    .time-btn:hover   { border-color: var(--accent); }
+    .time-btn.full    { opacity: .35; cursor: not-allowed; text-decoration: line-through; }
+    .time-btn.selected { border-color: var(--accent); background: rgba(249,199,79,.15); }
+
+    /* ─── BIG CTA BUTTON ───────────────────────────────────── */
+    .cta-btn {
+      width: 100%;
+      padding: 20px;
+      border: none;
+      border-radius: var(--radius);
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: .3px;
+      cursor: pointer;
+      margin-top: 28px;
+      transition: transform .2s, opacity .2s, box-shadow .2s;
+      touch-action: manipulation;
+    }
+    .cta-btn.male   { background: linear-gradient(135deg, var(--male), #4285f4); color: #fff; }
+    .cta-btn.female { background: linear-gradient(135deg, var(--female), #ce93d8); color: #fff; }
+    .cta-btn:hover  { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(0,0,0,.4); }
+    .cta-btn:active { transform: scale(.97); opacity: .92; }
+
+    /* ─── AI SECTION ───────────────────────────────────────── */
+    .ai-chat-box {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 24px;
+      border: 1px solid rgba(0,200,150,.25);
+    }
+    .ai-messages {
+      min-height: 260px;
+      max-height: 340px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-right: 4px;
+    }
+    .ai-messages::-webkit-scrollbar { width: 4px; }
+    .ai-messages::-webkit-scrollbar-thumb { background: var(--card2); border-radius: 4px; }
+
+    .msg {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .msg.user { flex-direction: row-reverse; }
+
+    .msg-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .msg-avatar.bot  { background: rgba(0,200,150,.2); }
+    .msg-avatar.user { background: rgba(26,115,232,.2); }
+
+    .msg-bubble {
+      background: var(--card2);
+      border-radius: 14px;
+      padding: 10px 14px;
+      max-width: 78%;
+      font-size: .95rem;
+      line-height: 1.5;
+    }
+    .msg.user .msg-bubble {
+      background: rgba(26,115,232,.2);
+      border: 1px solid rgba(26,115,232,.35);
+    }
+
+    .ai-input-row {
+      display: flex;
+      gap: 10px;
+    }
+    .ai-input {
+      flex: 1;
+      background: var(--card2);
+      border: 2px solid rgba(0,200,150,.3);
+      border-radius: 12px;
+      padding: 14px 16px;
+      font-size: .95rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color .2s;
+    }
+    .ai-input:focus { border-color: var(--ai); }
+    .ai-input::placeholder { color: var(--muted); }
+
+    .ai-send-btn {
+      background: var(--ai);
+      border: none;
+      border-radius: 12px;
+      padding: 0 22px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all .2s;
+      color: #fff;
+      touch-action: manipulation;
+      font-weight: 700;
+    }
+    .ai-send-btn:hover  { background: var(--ai-d); transform: scale(1.05); }
+    .ai-send-btn:active { transform: scale(.95); }
+
+    /* AI Quick Suggestions */
+    .ai-quick-btns {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .quick-btn {
+      background: rgba(0,200,150,.12);
+      border: 1px solid rgba(0,200,150,.3);
+      border-radius: 50px;
+      padding: 8px 16px;
+      font-size: .82rem;
+      color: var(--ai);
+      cursor: pointer;
+      transition: all .2s;
+      font-weight: 600;
+      touch-action: manipulation;
+    }
+    .quick-btn:hover  { background: rgba(0,200,150,.25); }
+    .quick-btn:active { transform: scale(.95); }
+
+    /* ─── AI STYLE RECOMMENDER ─────────────────────────────── */
+    .ai-recommender {
+      margin-top: 28px;
+      background: linear-gradient(135deg, rgba(0,200,150,.1), rgba(26,115,232,.1));
+      border: 1px solid rgba(0,200,150,.2);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .ai-recommender h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 6px; }
+    .ai-recommender p  { color: var(--muted); font-size: .9rem; margin-bottom: 16px; }
+
+    .face-shapes {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .face-btn {
+      background: var(--card2);
+      border: 2px solid transparent;
+      border-radius: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      text-align: center;
+      transition: all .2s;
+      touch-action: manipulation;
+      min-width: 90px;
+    }
+    .face-btn:hover   { border-color: var(--ai); }
+    .face-btn.active  { border-color: var(--ai); background: rgba(0,200,150,.15); }
+    .face-btn:active  { transform: scale(.95); }
+    .face-icon { font-size: 1.8rem; display: block; margin-bottom: 4px; }
+    .face-label { font-size: .78rem; font-weight: 600; }
+
+    .ai-result {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 16px;
+      font-size: .9rem;
+      line-height: 1.7;
+      border-left: 3px solid var(--ai);
+      display: none;
+    }
+    .ai-result.show { display: block; }
+    .ai-result strong { color: var(--ai); }
+
+    /* ─── TOAST ────────────────────────────────────────────── */
+    .toast {
+      position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(120px);
+      background: #23d18b; color: #0a1a12;
+      padding: 14px 28px; border-radius: 50px;
+      font-weight: 700; font-size: 1rem;
+      box-shadow: 0 8px 24px rgba(0,0,0,.4);
+      transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+      z-index: 999; white-space: nowrap;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* ─── FOOTER ───────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 28px 20px;
+      color: var(--muted);
+      font-size: .85rem;
+      border-top: 1px solid rgba(255,255,255,.06);
+    }
+    footer a { color: var(--accent); text-decoration: none; }
+
+    /* ─── RESPONSIVE ───────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .service-grid { grid-template-columns: repeat(2, 1fr); }
+      .tab-btn { padding: 13px 20px; font-size: .95rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══════════ HERO ══════════ -->
+<div class="hero">
+  <span class="badge">✦ Randevu Uygulaması</span>
+  <span class="hero-logo">💈</span>
+  <h1>BERBER <span>MOBİLE</span></h1>
+  <p>Traşını kolaylaştır — birkaç dokunuşla randevu al</p>
+</div>
+
+<!-- ══════════ NAV TABS ══════════ -->
+<div class="nav-tabs">
+  <button class="tab-btn male active" onclick="showTab('male')">👨 Erkek</button>
+  <button class="tab-btn female"      onclick="showTab('female')">👩 Kadın</button>
+  <button class="tab-btn ai"          onclick="showTab('ai')">🤖 Yapay Zeka</button>
+</div>
+
+<!-- ══════════ ERKEK SECTION ══════════ -->
+<div id="tab-male" class="section active">
+  <div class="section-header">
+    <h2>👨 Erkek Hizmetleri</h2>
+    <p>Klasik saç, sakal ve bakım hizmetleri</p>
+  </div>
+
+  <!-- Services -->
+  <div class="picker-label">🪒 Hizmet Seç</div>
+  <div class="service-grid" id="male-services">
+    <div class="service-card" onclick="selectService(this,'male')" data-name="Klasik Saç Kesimi">
+      <span class="service-icon">✂️</span>
+      <div class="service-name">Klasik Saç Kesimi</div>
+      <div class="service-price">₺150</div>
+      <div class="service-time">⏱ 30 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'male')" data-name="Sakal Tıraşı">
+      <span class="service-icon">🪒</span>
+      <div class="service-name">Sakal Tıraşı</div>
+      <div class="service-price">₺100</div>
+      <div class="service-time">⏱ 20 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'male')" data-name="Saç + Sakal">
+      <span class="service-icon">💈</span>
+      <div class="service-name">Saç + Sakal</div>
+      <div class="service-price">₺220</div>
+      <div class="service-time">⏱ 50 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'male')" data-name="Enselik & Fön">
+      <span class="service-icon">🌀</span>
+      <div class="service-name">Enselik & Fön</div>
+      <div class="service-price">₺80</div>
+      <div class="service-time">⏱ 15 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'male')" data-name="Bıyık Şekillendirme">
+      <span class="service-icon">👨‍🦱</span>
+      <div class="service-name">Bıyık Şekillendirme</div>
+      <div class="service-price">₺70</div>
+      <div class="service-time">⏱ 15 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'male')" data-name="Çocuk Saç Kesimi">
+      <span class="service-icon">👦</span>
+      <div class="service-name">Çocuk Saç Kesimi</div>
+      <div class="service-price">₺100</div>
+      <div class="service-time">⏱ 25 dk</div>
+    </div>
+  </div>
+
+  <!-- Barbers -->
+  <div class="picker-label" style="margin-top:28px;">👤 Berber Seç</div>
+  <div class="barber-row" id="male-barbers">
+    <div class="barber-card" onclick="selectBarber(this,'male')" data-name="Mehmet Usta">
+      <div class="barber-avatar">👨‍🦲</div>
+      <div class="barber-name">Mehmet Usta</div>
+      <div class="barber-stars">★★★★★ 4.9</div>
+    </div>
+    <div class="barber-card" onclick="selectBarber(this,'male')" data-name="Kemal Bey">
+      <div class="barber-avatar">🧔</div>
+      <div class="barber-name">Kemal Bey</div>
+      <div class="barber-stars">★★★★☆ 4.7</div>
+    </div>
+    <div class="barber-card" onclick="selectBarber(this,'male')" data-name="Ali Usta">
+      <div class="barber-avatar">👨</div>
+      <div class="barber-name">Ali Usta</div>
+      <div class="barber-stars">★★★★★ 5.0</div>
+    </div>
+  </div>
+
+  <!-- Date -->
+  <div class="picker-label">📅 Tarih Seç</div>
+  <div class="date-row" id="male-dates"></div>
+
+  <!-- Time -->
+  <div class="picker-label" style="margin-top:20px;">🕐 Saat Seç</div>
+  <div class="time-row" id="male-times"></div>
+
+  <button class="cta-btn male" onclick="bookAppointment('male')">
+    ✅ Randevu Al — Hemen Onayla
+  </button>
+</div>
+
+<!-- ══════════ KADIN SECTION ══════════ -->
+<div id="tab-female" class="section">
+  <div class="section-header">
+    <h2>👩 Kadın Hizmetleri</h2>
+    <p>Saç bakımı, boyama, fön ve özel hizmetler</p>
+  </div>
+
+  <!-- Services -->
+  <div class="picker-label">💅 Hizmet Seç</div>
+  <div class="service-grid" id="female-services">
+    <div class="service-card" onclick="selectService(this,'female')" data-name="Saç Kesimi">
+      <span class="service-icon">✂️</span>
+      <div class="service-name">Saç Kesimi</div>
+      <div class="service-price">₺200</div>
+      <div class="service-time">⏱ 45 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'female')" data-name="Fön & Şekillendirme">
+      <span class="service-icon">💨</span>
+      <div class="service-name">Fön & Şekillendirme</div>
+      <div class="service-price">₺180</div>
+      <div class="service-time">⏱ 40 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'female')" data-name="Saç Boyama">
+      <span class="service-icon">🎨</span>
+      <div class="service-name">Saç Boyama</div>
+      <div class="service-price">₺450</div>
+      <div class="service-time">⏱ 90 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'female')" data-name="Keratin Bakım">
+      <span class="service-icon">✨</span>
+      <div class="service-name">Keratin Bakım</div>
+      <div class="service-price">₺600</div>
+      <div class="service-time">⏱ 120 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'female')" data-name="Ombre & Balayage">
+      <span class="service-icon">🌅</span>
+      <div class="service-name">Ombre & Balayage</div>
+      <div class="service-price">₺550</div>
+      <div class="service-time">⏱ 100 dk</div>
+    </div>
+    <div class="service-card" onclick="selectService(this,'female')" data-name="Kaynak Saç">
+      <span class="service-icon">👸</span>
+      <div class="service-name">Kaynak Saç</div>
+      <div class="service-price">₺800</div>
+      <div class="service-time">⏱ 150 dk</div>
+    </div>
+  </div>
+
+  <!-- Barbers / Hairdressers -->
+  <div class="picker-label" style="margin-top:28px;">👤 Kuaför Seç</div>
+  <div class="barber-row" id="female-barbers">
+    <div class="barber-card" onclick="selectBarber(this,'female')" data-name="Ayşe Hanım">
+      <div class="barber-avatar">👩‍🦱</div>
+      <div class="barber-name">Ayşe Hanım</div>
+      <div class="barber-stars">★★★★★ 4.9</div>
+    </div>
+    <div class="barber-card" onclick="selectBarber(this,'female')" data-name="Fatma Kuaför">
+      <div class="barber-avatar">👩</div>
+      <div class="barber-name">Fatma Kuaför</div>
+      <div class="barber-stars">★★★★☆ 4.8</div>
+    </div>
+    <div class="barber-card" onclick="selectBarber(this,'female')" data-name="Zeynep Usta">
+      <div class="barber-avatar">👩‍🦰</div>
+      <div class="barber-name">Zeynep Usta</div>
+      <div class="barber-stars">★★★★★ 5.0</div>
+    </div>
+  </div>
+
+  <!-- Date -->
+  <div class="picker-label">📅 Tarih Seç</div>
+  <div class="date-row" id="female-dates"></div>
+
+  <!-- Time -->
+  <div class="picker-label" style="margin-top:20px;">🕐 Saat Seç</div>
+  <div class="time-row" id="female-times"></div>
+
+  <button class="cta-btn female" onclick="bookAppointment('female')">
+    ✅ Randevu Al — Hemen Onayla
+  </button>
+</div>
+
+<!-- ══════════ AI SECTION ══════════ -->
+<div id="tab-ai" class="section">
+  <div class="section-header">
+    <h2>🤖 Yapay Zeka Asistanı</h2>
+    <p>Saç stili önerisi al, sorularını sor, randevu hakkında bilgi edin</p>
+  </div>
+
+  <!-- Chat -->
+  <div class="ai-chat-box">
+    <div class="ai-messages" id="ai-messages">
+      <div class="msg">
+        <div class="msg-avatar bot">🤖</div>
+        <div class="msg-bubble">
+          Merhaba! Ben Berber MOBİLE yapay zeka asistanıyım. 💈<br>
+          Saç stili önermemi ister misin? Yoksa randevu hakkında soru mu sormak istiyorsun?
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick suggestions -->
+    <div class="ai-quick-btns">
+      <button class="quick-btn" onclick="quickAsk('Bana saç stili öner')">💇 Saç stili öner</button>
+      <button class="quick-btn" onclick="quickAsk('Fiyatlar nedir?')">💰 Fiyatlar</button>
+      <button class="quick-btn" onclick="quickAsk('Hangi berber en iyi?')">⭐ En iyi berber</button>
+      <button class="quick-btn" onclick="quickAsk('Bugün müsait saatler var mı?')">📅 Müsait saatler</button>
+    </div>
+
+    <div class="ai-input-row">
+      <input class="ai-input" id="ai-input" type="text" placeholder="Bir şey sor... örn: kısa saç modelleri neler?" 
+             onkeydown="if(event.key==='Enter') sendAI()" />
+      <button class="ai-send-btn" onclick="sendAI()">➤</button>
+    </div>
+  </div>
+
+  <!-- Style Recommender -->
+  <div class="ai-recommender">
+    <h3>🎯 Yüz Şekline Göre Stil Öneri</h3>
+    <p>Yüz şeklini seç, yapay zeka sana en uygun saç modelini önersin.</p>
+
+    <div class="face-shapes">
+      <button class="face-btn" onclick="faceRecommend(this,'oval')">
+        <span class="face-icon">🥚</span>
+        <span class="face-label">Oval</span>
+      </button>
+      <button class="face-btn" onclick="faceRecommend(this,'kare')">
+        <span class="face-icon">⬛</span>
+        <span class="face-label">Kare</span>
+      </button>
+      <button class="face-btn" onclick="faceRecommend(this,'yuvarlak')">
+        <span class="face-icon">⭕</span>
+        <span class="face-label">Yuvarlak</span>
+      </button>
+      <button class="face-btn" onclick="faceRecommend(this,'kalp')">
+        <span class="face-icon">🫀</span>
+        <span class="face-label">Kalp</span>
+      </button>
+      <button class="face-btn" onclick="faceRecommend(this,'uzun')">
+        <span class="face-icon">🍐</span>
+        <span class="face-label">Uzun</span>
+      </button>
+    </div>
+
+    <div class="ai-result" id="ai-result"></div>
+  </div>
+</div>
+
+<!-- ══════════ TOAST ══════════ -->
+<div class="toast" id="toast"></div>
+
+<!-- ══════════ FOOTER ══════════ -->
+<footer>
+  💈 <strong>Berber MOBİLE</strong> — Traş randevunu kolaylaştır<br>
+  <a href="https://github.com/alimranshn/BERBER-MOB-LE" target="_blank">GitHub'da Gör</a>
+</footer>
+
+<script>
+  /* ─── STATE ─────────────────────────────────── */
+  const state = {
+    male:   { service: null, barber: null, date: null, time: null },
+    female: { service: null, barber: null, date: null, time: null }
+  };
+
+  /* ─── TABS ──────────────────────────────────── */
+  function showTab(name) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    document.querySelector('.tab-btn.' + name).classList.add('active');
+  }
+
+  /* ─── SERVICE SELECT ────────────────────────── */
+  function selectService(el, gender) {
+    document.querySelectorAll(`#${gender}-services .service-card`).forEach(c => c.classList.remove('selected', 'male', 'female'));
+    el.classList.add('selected', gender);
+    state[gender].service = el.dataset.name;
+  }
+
+  /* ─── BARBER SELECT ─────────────────────────── */
+  function selectBarber(el, gender) {
+    document.querySelectorAll(`#${gender}-barbers .barber-card`).forEach(c => c.classList.remove('selected'));
+    el.classList.add('selected');
+    state[gender].barber = el.dataset.name;
+  }
+
+  /* ─── DATES ─────────────────────────────────── */
+  const days = ['Paz','Pzt','Sal','Çar','Per','Cum','Cmt'];
+  const months = ['Oca','Şub','Mar','Nis','May','Haz','Tem','Ağu','Eyl','Eki','Kas','Ara'];
+
+  function buildDates(containerId, gender) {
+    const container = document.getElementById(containerId);
+    const today = new Date();
+    for (let i = 0; i < 10; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const btn = document.createElement('button');
+      btn.className = 'date-btn';
+      btn.innerHTML = `<div class="date-day">${days[d.getDay()]}</div>
+                       <div class="date-num">${d.getDate()}</div>
+                       <div class="date-month">${months[d.getMonth()]}</div>`;
+      btn.onclick = () => {
+        container.querySelectorAll('.date-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        state[gender].date = `${d.getDate()} ${months[d.getMonth()]}`;
+      };
+      container.appendChild(btn);
+    }
+  }
+
+  /* ─── TIMES ─────────────────────────────────── */
+  const allTimes = ['09:00','09:30','10:00','10:30','11:00','11:30','12:00','13:00','13:30','14:00','14:30','15:00','15:30','16:00','16:30','17:00'];
+  const fullSlots = ['10:00','12:00','14:30'];
+
+  function buildTimes(containerId, gender) {
+    const container = document.getElementById(containerId);
+    allTimes.forEach(t => {
+      const btn = document.createElement('button');
+      btn.className = 'time-btn' + (fullSlots.includes(t) ? ' full' : '');
+      btn.textContent = t;
+      if (!fullSlots.includes(t)) {
+        btn.onclick = () => {
+          container.querySelectorAll('.time-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          state[gender].time = t;
+        };
+      }
+      container.appendChild(btn);
+    });
+  }
+
+  /* ─── BOOKING ────────────────────────────────── */
+  function bookAppointment(gender) {
+    const s = state[gender];
+    if (!s.service) { showToast('⚠️ Lütfen bir hizmet seçin'); return; }
+    if (!s.barber)  { showToast('⚠️ Lütfen bir berber seçin'); return; }
+    if (!s.date)    { showToast('⚠️ Lütfen tarih seçin'); return; }
+    if (!s.time)    { showToast('⚠️ Lütfen saat seçin'); return; }
+    showToast(`✅ Randevu alındı! ${s.date} ${s.time} — ${s.barber} — ${s.service}`);
+  }
+
+  /* ─── TOAST ──────────────────────────────────── */
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 3200);
+  }
+
+  /* ─── AI CHAT ────────────────────────────────── */
+  const aiResponses = {
+    'saç stili öner':   'Saç stilin için birkaç soru sormam gerekiyor 😊 Yüz şekline göre aşağıdan seçim yapabilirsin! Oval yüz için pompadour, kare yüz için buzz cut harika gider.',
+    'fiyatlar nedir?':  'Erkek hizmetleri ₺70\'den başlar. Kadın hizmetleri ₺180\'den başlar. Detaylı fiyatlar için ilgili kategoriyi incele 💈',
+    'hangi berber en iyi?': 'Ali Usta 5.0 puan ile en yüksek puana sahip! Mehmet Usta ise sakal konusunda uzman. Zeynep Usta boyama hizmetinde mükemmel.',
+    'bugün müsait saatler var mı?': 'Bugün 09:00, 09:30, 10:30, 11:00, 11:30, 13:00, 13:30, 14:00, 15:00 ve daha fazlası müsait! ✅',
+    'default': 'Anlıyorum! Sana yardımcı olmaya çalışıyorum 🤖 Randevu almak için Erkek veya Kadın sekmesine geçebilirsin. Başka sorun var mı?'
+  };
+
+  function quickAsk(text) {
+    document.getElementById('ai-input').value = text;
+    sendAI();
+  }
+
+  function sendAI() {
+    const input = document.getElementById('ai-input');
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(text, 'user');
+    input.value = '';
+
+    setTimeout(() => {
+      const key = Object.keys(aiResponses).find(k => text.toLowerCase().includes(k.toLowerCase())) || 'default';
+      addMessage(aiResponses[key], 'bot');
+    }, 700);
+  }
+
+  function addMessage(text, who) {
+    const box = document.getElementById('ai-messages');
+    const div = document.createElement('div');
+    div.className = 'msg ' + who;
+    div.innerHTML = `
+      <div class="msg-avatar ${who}">${who === 'bot' ? '🤖' : '🧑'}</div>
+      <div class="msg-bubble">${text}</div>`;
+    box.appendChild(div);
+    box.scrollTop = box.scrollHeight;
+  }
+
+  /* ─── FACE SHAPE RECOMMENDER ─────────────────── */
+  const faceRecs = {
+    oval:    '<strong>Oval yüz</strong> — Neredeyse her stil yakışır! Pompadour, fade, undercut veya klasik yan yatık saç tam sana göre. 🏆',
+    kare:    '<strong>Kare yüz</strong> — Yuvarlak kesimler veya quiff stilini dene! Sert hatları yumuşatmak için üstten uzun, yandan kısa saç harika durur. ✂️',
+    yuvarlak:'<strong>Yuvarlak yüz</strong> — Yüzünü uzatacak stiller seç: pompadour veya yüksek fade. Yandan sıkı, üstten hacimli saçlar mükemmel durur. 📐',
+    kalp:    '<strong>Kalp yüz</strong> — Alın kısmını kapatmak için fırça veya fringe stil dene. Kısa saç + hafif sakal kombinasyonu çok şık! 💫',
+    uzun:    '<strong>Uzun yüz</strong> — Yatay hacim ekle: buzz cut, Fransa kesmesi veya kabarık yanlı saçlar yüzünü dengeler. 🎯'
+  };
+
+  function faceRecommend(el, shape) {
+    document.querySelectorAll('.face-btn').forEach(b => b.classList.remove('active'));
+    el.classList.add('active');
+    const result = document.getElementById('ai-result');
+    result.innerHTML = '🤖 <strong>AI Önerisi:</strong><br><br>' + faceRecs[shape];
+    result.classList.add('show');
+  }
+
+  /* ─── INIT ───────────────────────────────────── */
+  buildDates('male-dates',   'male');
+  buildDates('female-dates', 'female');
+  buildTimes('male-times',   'male');
+  buildTimes('female-times', 'female');
+</script>
+</body>
+</html>
