@@ -1,26 +1,11 @@
 [
-  {
-    "berber_adi": "Makas Kardeşler",
-    "makas_puani": 4.8,
-    "uzaklik_km": 1.2,
-    "hizmetler": [
-      { "islem": "Saç Kesimi", "fiyat_tl": 200, "sure_dk": 25 },
-      { "islem": "Sakal Kesimi", "fiyat_tl": 100, "sure_dk": 15 },
-      { "islem": "Ağda", "fiyat_tl": 50, "sure_dk": 10 },
-      { "islem": "Kaş Alımı", "fiyat_tl": 60, "sure_dk": 10 }
-    ],
-    "musaitlik": "14:30"
-  },
-  {
-    "berber_adi": "VIP Kuaför Salonu",
-    "makas_puani": 4.5,
-    "uzaklik_km": 3.5,
-    "hizmetler": [
-      { "islem": "Saç Kesimi", "fiyat_tl": 300, "sure_dk": 30 },
-      { "islem": "Saç Boyama", "fiyat_tl": 600, "sure_dk": 45 },
-      { "islem": "Sakal Kesimi", "fiyat_tl": 150, "sure_dk": 20 },
-      { "islem": "Keratin Bakım", "fiyat_tl": 400, "sure_dk": 40 }
-    ],
-    "musaitlik": "15:00"
-  }
+  { "id": 1, "name": "Saç Kesimi", "price": 600, "category": "Kadın", "desc": "Profesyonel saç kesimi ve şekillendirme." },
+  { "id": 2, "name": "Dip Boya", "price": 1200, "category": "Kadın", "desc": "Kaliteli organik boyalar ile dip boya işlemi." },
+  { "id": 3, "name": "Manikür & Pedikür", "price": 800, "category": "Kadın", "desc": "El ve ayak tırnak bakımı, oje uygulaması." },
+  { "id": 4, "name": "Kombo: Yenilenme Paketi", "price": 2500, "category": "Kadın", "desc": "İçerik: Saç Kesimi + Komple Boya + Keratin Bakımı. Komple değişim isteyenler için indirimli paket." },
+  
+  { "id": 5, "name": "Saç & Sakal Kesimi", "price": 400, "category": "Erkek", "desc": "Modern saç kesimi ve detaylı sakal tıraşı." },
+  { "id": 6, "name": "Sadece Saç Kesimi", "price": 300, "category": "Erkek", "desc": "Makine ve makas ile saç kesimi, yıkama." },
+  { "id": 7, "name": "Cilt Bakımı", "price": 500, "category": "Erkek", "desc": "Siyah nokta temizliği, buhar ve nemlendirici maske." },
+  { "id": 8, "name": "Kombo: VIP Damat/Bakım", "price": 850, "category": "Erkek", "desc": "İçerik: Saç-Sakal + Siyah Nokta Maskesi + Yanak/Kulak Ağda + Yıkama ve Fön." }
 ]
